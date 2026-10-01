@@ -1,0 +1,13 @@
+#! /usr/bin/php
+
+<?php
+
+// print("md5 utility by sabarish\n");
+
+print_r($argv);
+
+if (count($argv) != 2) {
+    die("Usage: md5 \"<string>\"\n"); // exit from md5 commands and print usage 
+}
+
+print(md5($argv[1])); //argv is 1st argument 

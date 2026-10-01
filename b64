@@ -1,0 +1,27 @@
+#! /usr/bin/python3
+
+print("base64 utility by sabarish\n")
+
+import base64
+import sys  # information about python interpreter
+
+#print(sys.argv)
+#print(sys.api_version)
+#print(sys.copyright)
+#print(vars(sys))
+
+if(len(sys.argv) != 3 or sys.argv[1] == '-h'):
+    print("Usage: b64 {-e|-d} [-h] \"<string>\"")
+    print("-e Encode")
+    print("-d Decode")
+    print("-h prints this help menu")
+    exit(-1)
+
+path = sys.argv[0]
+option = sys.argv[1]
+data = sys.argv[2]
+
+if option == "-e":
+    print(base64.b64encode(data.encode()).decode())
+elif option == "-d":
+    print(base64.b64decode(data.encode()).decode())
