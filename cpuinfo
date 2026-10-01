@@ -1,0 +1,21 @@
+#! /usr/bin/python3
+
+from optparse import OptionParser
+import psutil
+
+parser = OptionParser()
+parser.add_option("-c", "--cpu",
+                  action="store_true", dest="cpu", default=False,
+                  help="Print the number of CPU cores")
+parser.add_option("-l", "--load",
+                  action="store_true", dest="loadavg", default=False,
+                  help="Print the load average")
+
+
+(options, args) = parser.parse_args()
+
+# print(options, args)
+if options.ensure_value('cpu', False):
+    print(psutil.cpu_count())
+if options.ensure_value('loadavg', False):
+    print(psutil.getloadavg())

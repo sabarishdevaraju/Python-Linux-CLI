@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+
+import argparse
+from pathlib import Path
+import psutil
+
+
+def cpu_info():
+    print("=== CPU INFO ===")
+    print(f"Logical CPUs  : {psutil.cpu_count(logical=True)}")
+    print(f"Physical CPUs : {psutil.cpu_count(logical=False)}")
+    print(f"CPU Usage     : {psutil.cpu_percent(interval=1)}%")
+
+
+def ram_info():
+    memory = psutil.virtual_memory()
+
+    print("=== RAM INFO ===")
+    print(f"Total     : {memory.total / (1024**3):.2f} GB")
+    print(f"Used      : {memory.used / (1024**3):.2f} GB")
+    print(f"Available : {memory.available / (1024**3):.2f} GB")
+    print(f"Usage     : {memory.percent}%")
+
+
+def disk_info():
+    print("=== DISK INFO ===")
+
+    for partition in psutil.disk_partitions():
+        try:
+            usage = psutil.disk_usage(partition.mountpoint)
+
+            print(
+                f"{partition.device:<20} "
+                f"{usage.total / (1024**3):>8.1f}G "
+                f"{usage.used / (1024**3):>8.1f}G "
+                f"{usage.free / (1024**3):>8.1f}G "
+                f"{usage.percent:>5}% "
+                f"{partition.mountpoint}"
+            )
+
+        except PermissionError:
+            continue
+
+
+def last_files(directory, limit=10):
+    path = Path(directory)
+
+    if not path.exists():
+        print(f"Directory not found: {directory}")
+        return
+
+    files = [f for f in path.iterdir() if f.is_file()]
+
+    files.sort(
+        key=lambda f: f.stat().st_mtime,
+        reverse=True
+    )
+
+    print(f"=== LAST {limit} MODIFIED FILES ===")
+
+    for file in files[:limit]:
+        size = file.stat().st_size / (1024**2)
+        print(f"{size:8.2f} MB  {file.name}")
+
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        description="Linux System Information CLI"
+    )
+
+    parser.add_argument(
+        "-cpu",
+        "--cpu",
+        action="store_true",
+        help="Show CPU information"
+    )
+
+    parser.add_argument(
+        "-ram",
+        "--ram",
+        action="store_true",
+        help="Show RAM information"
+    )
+
+    parser.add_argument(
+        "-disk",
+        "--disk",
+        action="store_true",
+        help="Show disk usage similar to df -h"
+    )
+
+    parser.add_argument(
+        "-files",
+        "--files",
+        metavar="DIRECTORY",
+        nargs="?",
+        const=".",
+        help="Show recently modified files"
+    )
+
+    parser.add_argument(
+        "-n",
+        "--number",
+        type=int,
+        default=10,
+        help="Number of files to display"
+    )
+
+    args = parser.parse_args()
+
+    if args.cpu:
+        cpu_info()
+
+    if args.ram:
+        ram_info()
+
+    if args.disk:
+        disk_info()
+
+    if args.files is not None:
+        last_files(args.files, args.number)
+
+
+if __name__ == "__main__":
+    main()

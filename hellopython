@@ -1,4 +1,26 @@
-#! /bin/python
+#! /usr/bin/python3
 
 
 print("Hello World!")
+
+"""import argparse # it is a Built in python module
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--output')
+    parser.add_argument('-v', dest='verbose', action='store_true')
+    args = parser.parse_args()
+    print(args)"""
+
+from optparse import OptionParser
+...
+parser = OptionParser()
+parser.add_option("-f", "--file", dest="filename",
+                  help="write report to FILE", metavar="FILE")
+parser.add_option("-q", "--quiet",
+                  action="store_false", dest="verbose", default=True,
+                  help="don't print status messages to stdout")
+
+(options, args) = parser.parse_args()
+
+print(options, args)
