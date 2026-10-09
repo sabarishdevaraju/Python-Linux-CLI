@@ -26,11 +26,11 @@ class Argument:
         reqoptions = set(options)
         return list(reqoptions & useroptions)
 
-    def hasOption(self, option):
-        return self.hasOptions([option])
+    def hasOption(self, option): 
+            return self.hasOptions([option])
 
     def hasOptionValue(self, option):
-        return option in self.optionValues
+            return option in self.optionValues
 
 
     def hasCommands(self, commands):
@@ -44,6 +44,7 @@ class Argument:
     
     def getOptionValue(self, option, default=None):
         if option in self.optionValues:
-            return self.optionValues[option]
+                return self.optionValues[option]
         else:
             return default
+        
