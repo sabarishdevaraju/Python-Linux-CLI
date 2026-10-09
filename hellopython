@@ -13,7 +13,34 @@ if __name__ == '__main__':
     print(args)"""
 
 from optparse import OptionParser
-...
+import os # related operating system
+import sys # related to python
+
+
+class Unbuffered(object):
+    def __init__(self, stream):
+        self.stream = stream
+
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+
+    def writelines(self, datas):
+        self.stream.writelines(datas)
+        self.stream.flush()
+
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
+
+sys.stdout = Unbuffered(sys.stdout)
+sys.stderr = Unbuffered(sys.stderr)
+
+
+sys.stderr.write("This is an error\n")
+sys.stdout.write("#This is not an error\n")
+#sys.stdout.flush()
+
 parser = OptionParser()
 parser.add_option("-f", "--file", dest="filename",
                   help="write report to FILE", metavar="FILE")
@@ -23,4 +50,9 @@ parser.add_option("-q", "--quiet",
 
 (options, args) = parser.parse_args()
 
-print(options, args)
+#print(options, args)
+
+if not options.ensure_value('filename', ""):
+    filename = input("Enter Filename to cat: ") #Stdin
+    os.system('cat '+filename)
+os.system('cat '+options.ensure_value('filename', "hellopython"))
