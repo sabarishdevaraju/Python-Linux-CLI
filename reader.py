@@ -1,6 +1,6 @@
 from multiprocessing import shared_memory
 
-shmb = shared_memory.SharedMemory(name='psm_26479f21')
+shmb = shared_memory.SharedMemory(name='psm_33311609')
 
 my_list = list(shmb.buf)
 
