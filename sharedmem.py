@@ -5,7 +5,7 @@ import sys
 args = Argument(sys.argv)
 
 if(not args.hasOptions(['--shm','--pname'])):
-    print('Usage: {} --shm=NAME --ptype=[master|slave]'.format(sys.argv[0]))
+    print('Usage: {} --shm=NAME --pname=[master|slave]'.format(sys.argv[0]))
     exit(1)
 
 if(args.getOptionValue('--pname') == 'master'):
@@ -21,17 +21,23 @@ def readShmString(shm):
     buf = shm.buf
     return str(buf, 'utf-8').rstrip('\x00')
 
-while True:
-    choice = input('1: Read SHM; 2: Write SHM; 3: Close SHM; Choose > ')
-    if choice == '1':
-        print(readShmString(shm))
-    elif choice == '2':
-        val = input('Enter a string to write to SHM > ')
-        writeShmString(shm, val)
-    elif choice == '3':
-        shm.close()
-        shm.unlink()
-        break
+
+try:
+    while True:
+        choice = input('1: Read SHM; 2: Write SHM; 3: Close SHM; Choose > ')
+        if choice == '1':
+            print(readShmString(shm))
+        elif choice == '2':
+            val = input('Enter a string to write to SHM > ')
+            writeShmString(shm, val)
+        elif choice == '3':
+            shm.close()
+            shm.unlink()
+            break
+except KeyboardInterrupt:
+    shm.close()
+    shm.unlink()
+    print("\nProgram terminated by user.")
 
 # 
 # 
